@@ -1,0 +1,222 @@
+{
+  "name": "Interview Question Generator",
+  "nodes": [
+    {
+      "parameters": {
+        "multipleMethods": true,
+        "httpMethod": [
+          "GET"
+        ],
+        "path": "interview_questions",
+        "responseMode": "responseNode",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2.1,
+      "position": [
+        -80,
+        0
+      ],
+      "id": "f693e4da-b65f-4f5f-b43d-4932144e8c84",
+      "name": "Webhook",
+      "webhookId": "823293f7-fdad-430f-818e-e877af08a2ba"
+    },
+    {
+      "parameters": {
+        "respondWith": "allIncomingItems",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.4,
+      "position": [
+        784,
+        0
+      ],
+      "id": "c85c8f22-f386-4825-97f3-0f955fbcb9b8",
+      "name": "Respond to Webhook"
+    },
+    {
+      "parameters": {
+        "modelId": {
+          "__rl": true,
+          "value": "gpt-4.1-mini",
+          "mode": "list",
+          "cachedResultName": "GPT-4.1-MINI"
+        },
+        "messages": {
+          "values": [
+            {
+              "content": "=Generate 5 interview questions for this job description : {{ $json.query.job_description }} in {{ $json.query.interview_type }} style. Dont give question topic give questions directly. And give line space between questions. Avoid using double quotes(as i will set response in JSON)"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.openAi",
+      "typeVersion": 1.8,
+      "position": [
+        192,
+        0
+      ],
+      "id": "6e7a2d29-41da-49ae-8ed3-29c9e4a09ab7",
+      "name": "OpanAI",
+      "credentials": {
+        "openAiApi": {
+          "id": "hcGB6LzJtqtNQgvM",
+          "name": "n8n free OpenAI API credits"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "mode": "raw",
+        "jsonOutput": "={\n  \"Q1\": \"{{ $json.message.content.split('\\n\\n')[0] }}\",\n  \"Q2\":\"{{ $json.message.content.split('\\n\\n')[1] }}\",\n  \"Q3\":\"{{ $json.message.content.split('\\n\\n')[2] }}\",\n  \"Q4\":\"{{ $json.message.content.split('\\n\\n')[3] }}\",\n  \"Q5\":\"{{ $json.message.content.split('\\n\\n')[4] }}\",\n}\n",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        560,
+        0
+      ],
+      "id": "b6a9f626-4ad5-4d70-b4df-05397181e161",
+      "name": "Format"
+    }
+  ],
+  "pinData": {
+    "Webhook": [
+      {
+        "json": {
+          "headers": {
+            "host": "sweety23.app.n8n.cloud",
+            "user-agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36 Edg/140.0.0.0",
+            "accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.7",
+            "accept-encoding": "gzip, br",
+            "accept-language": "en-US,en;q=0.9,en-IN;q=0.8",
+            "cdn-loop": "cloudflare; loops=1; subreqs=1",
+            "cf-connecting-ip": "2401:4900:8822:4779:e83b:d4ff:b5a6:5d37",
+            "cf-ew-via": "15",
+            "cf-ipcountry": "IN",
+            "cf-ray": "9875844df4963e45-BOM",
+            "cf-visitor": "{\"scheme\":\"https\"}",
+            "cf-worker": "n8n.cloud",
+            "cookie": "rl_page_init_referrer=RudderEncrypt%3AU2FsdGVkX18YT7r2AfUjLH9rk8E4tJ%2BT2OlDWyc1AyM%3D; rl_page_init_referring_domain=RudderEncrypt%3AU2FsdGVkX1%2FmYmGzFmRU7Ar18j8yHhemkjrbVRK739Q%3D; _fbp=fb.1.1759153320982.642223806375259010; _gcl_au=1.1.1996778156.1759153467; _ga_0SC4FF2FH9=GS2.1.s1759158441$o2$g1$t1759158647$j43$l0$h0; rl_anonymous_id=RudderEncrypt%3AU2FsdGVkX1%2BmEe87mQ6Np2Sbztq2HK44k44kIgGK3flwEvv%2BmySEY91oIfyA2HJercHNN1ynxCulhyx8qPP%2F1Q%3D%3D; rl_user_id=RudderEncrypt%3AU2FsdGVkX189P11FSK0XR%2BZufek3yULoeAG%2Fz0Q7hTYqfH0xfQZjjpB1vL8FAfMMS8usQKynWP51NLFTGjhwowtDym95kZkzf2v1FVIMQZY4O0vv9zFz2SSq7LFCOywx6XWQZQoN8ENvn6c5T%2FrEvQsttHvwFNIA3G5bFrJboaA%3D; rl_trait=RudderEncrypt%3AU2FsdGVkX1%2Bx05cYbWpecyQJkRXVGnQv5lG%2FJGflVdxbJJ22P68LMfiJUiRXEY4oDH4AF74rXuSNiWUKmmTY%2B9Kh0gKoIViDqAXWCqq2CuQWkqFzXf2h0BHo2Gh5uPEzW2X4182nJUXns0ZluBHKRwPl7p2yYKcYGDDLvDW2kZnjIsAX0C0L7Q6mYgj4%2FxmmVh4nD7H8dOMpl1CSr5P5XA%3D%3D; n8n_anonymous_id=94d3475d-6484-464c-b833-c1b200de5228; ph_phc_4URIAm1uYfJO7j8kWSe0J8lc8IqnstRLS7Jx8NcakHo_posthog=%7B%22distinct_id%22%3A%22ed283cb09d41cffe8b0e301ef7514132cf0cc37b22797bed1c9d5aef7e0f7a7c%238024110d-6a85-4eea-bebc-5ab1036a9f05%22%2C%22%24sesid%22%3A%5B1759253436178%2C%2201999bac-7ee4-7bf1-8e36-e037752ec6c0%22%2C1759253397220%5D%2C%22%24epp%22%3Atrue%2C%22%24initial_person_info%22%3A%7B%22r%22%3A%22%24direct%22%2C%22u%22%3A%22https%3A%2F%2Fsweety23.app.n8n.cloud%2Fworkflows%22%7D%7D; rl_session=RudderEncrypt%3AU2FsdGVkX19KjHM%2Fvwp%2BBUJAoTwT2%2BpUczc7h6vSNUS4sk15mShrSGZyX8y%2BdaEDyWomGMXrzlb02%2B2O6P%2BRT%2BhVr8uFUeu%2BXYCfrXOFI7LthMPiduGY1rp8zIDdmrPeoKFapDOSjoC4NAze2mj27g%3D%3D",
+            "if-none-match": "W/\"357-W7vmZyX8xlszzmKUvBunqsb8/pU\"",
+            "priority": "u=0, i",
+            "sec-ch-ua": "\"Chromium\";v=\"140\", \"Not=A?Brand\";v=\"24\", \"Microsoft Edge\";v=\"140\"",
+            "sec-ch-ua-mobile": "?0",
+            "sec-ch-ua-platform": "\"Windows\"",
+            "sec-fetch-dest": "document",
+            "sec-fetch-mode": "navigate",
+            "sec-fetch-site": "none",
+            "sec-fetch-user": "?1",
+            "upgrade-insecure-requests": "1",
+            "x-forwarded-for": "2401:4900:8822:4779:e83b:d4ff:b5a6:5d37, 172.69.94.173",
+            "x-forwarded-host": "sweety23.app.n8n.cloud",
+            "x-forwarded-port": "443",
+            "x-forwarded-proto": "https",
+            "x-forwarded-server": "traefik-prod-users-gwc-31-674f44b4c9-zzrz7",
+            "x-is-trusted": "yes",
+            "x-real-ip": "2401:4900:8822:4779:e83b:d4ff:b5a6:5d37"
+          },
+          "params": {},
+          "query": {
+            "job_descripton": "\"• Demonstrated passion for AI competing in sponsored challenges such as Kaggle • Previous experience with or exposure to: •Deep Learning algorithm techniques, open source tools and technologies, statistical tools, and programming environments such as Python, R, and SQL • •Big Data platforms such as Hadoop, Hive, Spark, GPU Clusters for deep learning •Classical Machine Learning Algorithms like Logistic Regression, Decision trees, Clustering (K-means, •Hierarchical and Self-organizing Maps), TSNE, PCA, Bayesian models, Time Series ARIMA/ARMA, •Recommender Systems - Collaborative Filtering, FPMC, FISM, Fossil •Deep Learning algorithm techniques like Random Forest, GBM, KNN, SVM, Bayesian, Text Mining techniques, Multilayer Perceptron, Neural Networks – Feedforward, CNN, LSTM’s GRU’s is a plus. •Optimization techniques – Activity regularization (L1 and L2), Adam, Adagrad, Adadelta concepts\"",
+            "interview_type": "\"Technical\""
+          },
+          "body": {},
+          "webhookUrl": "https://sweety23.app.n8n.cloud/webhook/interview_questions",
+          "executionMode": "production"
+        }
+      }
+    ],
+    "OpanAI": [
+      {
+        "json": {
+          "index": 0,
+          "message": {
+            "role": "assistant",
+            "content": "Explain a complex technical problem you encountered in a past project and how you resolved it.\n\nDescribe your experience with system architecture design and how you ensure scalability and reliability.\n\nHow do you approach debugging and troubleshooting in a live production environment?\n\nCan you walk me through the process of optimizing a software application for performance?\n\nDiscuss the tools and methodologies you use for version control and continuous integration in your development workflow.",
+            "refusal": null,
+            "annotations": []
+          },
+          "logprobs": null,
+          "finish_reason": "stop"
+        }
+      }
+    ],
+    "Format": [
+      {
+        "json": {
+          "Q1": "Explain a complex technical problem you encountered in a past project and how you resolved it.",
+          "Q2": "Describe your experience with system architecture design and how you ensure scalability and reliability.",
+          "Q3": "How do you approach debugging and troubleshooting in a live production environment?",
+          "Q4": "Can you walk me through the process of optimizing a software application for performance?",
+          "Q5": "Discuss the tools and methodologies you use for version control and continuous integration in your development workflow."
+        }
+      }
+    ],
+    "Respond to Webhook": [
+      {
+        "json": {
+          "Q1": "Explain a complex technical problem you encountered in a past project and how you resolved it.",
+          "Q2": "Describe your experience with system architecture design and how you ensure scalability and reliability.",
+          "Q3": "How do you approach debugging and troubleshooting in a live production environment?",
+          "Q4": "Can you walk me through the process of optimizing a software application for performance?",
+          "Q5": "Discuss the tools and methodologies you use for version control and continuous integration in your development workflow."
+        }
+      }
+    ]
+  },
+  "connections": {
+    "Webhook": {
+      "main": [
+        [
+          {
+            "node": "OpanAI",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpanAI": {
+      "main": [
+        [
+          {
+            "node": "Format",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Respond to Webhook": {
+      "main": [
+        []
+      ]
+    },
+    "Format": {
+      "main": [
+        [
+          {
+            "node": "Respond to Webhook",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": true,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "a2c68576-3ac4-49fc-a69a-5c59517a01f8",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "ed283cb09d41cffe8b0e301ef7514132cf0cc37b22797bed1c9d5aef7e0f7a7c"
+  },
+  "id": "GP3yoFpEGbQFuGjc",
+  "tags": []
+}

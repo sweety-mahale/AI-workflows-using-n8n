@@ -1,0 +1,214 @@
+{
+  "name": "Candidate Answer Evaluator",
+  "nodes": [
+    {
+      "parameters": {
+        "path": "answer_evaluation",
+        "responseMode": "responseNode",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2.1,
+      "position": [
+        -416,
+        -16
+      ],
+      "id": "9ed9f384-4be4-49de-9cc9-36be9b1cab73",
+      "name": "Webhook",
+      "webhookId": "0d87f109-5930-4b0a-ab62-019569183dd6"
+    },
+    {
+      "parameters": {
+        "respondWith": "allIncomingItems",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.4,
+      "position": [
+        368,
+        -16
+      ],
+      "id": "d193b5be-7526-456a-ac21-52906196d61e",
+      "name": "Respond to Webhook",
+      "disabled": true
+    },
+    {
+      "parameters": {
+        "modelId": {
+          "__rl": true,
+          "value": "gpt-4.1-nano",
+          "mode": "list",
+          "cachedResultName": "GPT-4.1-NANO"
+        },
+        "messages": {
+          "values": [
+            {
+              "content": "=Evaluate this candidate answer:\nquestion:{{ $json.query.question }}\nanswer: {{ $json.query.answer }}.\n\nGive a score 0–10, short feedback, and hiring recommendation (Yes/No/Maybe).\n\nReturn only in JSON format:\n{\"score\": <number>, \"feedback\": \"<short feedback>\", \"recommendation\": \"<Yes/No/Maybe>\"}\n"
+            }
+          ]
+        },
+        "jsonOutput": true,
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.openAi",
+      "typeVersion": 1.8,
+      "position": [
+        -208,
+        -16
+      ],
+      "id": "82ad6d81-5f82-4cf5-a7bb-4469b9bfc0e6",
+      "name": "OpanAI",
+      "credentials": {
+        "openAiApi": {
+          "id": "hcGB6LzJtqtNQgvM",
+          "name": "n8n free OpenAI API credits"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "mode": "raw",
+        "jsonOutput": "={\n  \"score\": \" {{ $json.message.content.score}}\",\n  \"feedback\":\"{{ $json.message.content.feedback }}\",\n  \"recommendation\":\"{{ $json.message.content.recommendation }}\"\n}\n",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        144,
+        -16
+      ],
+      "id": "6edd0425-15d6-4892-81ae-a8432c776bbe",
+      "name": "Format"
+    }
+  ],
+  "pinData": {
+    "Webhook": [
+      {
+        "json": {
+          "headers": {
+            "host": "sweety23.app.n8n.cloud",
+            "user-agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36",
+            "accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.7",
+            "accept-encoding": "gzip, br",
+            "accept-language": "en-US,en;q=0.9,hi;q=0.8",
+            "cdn-loop": "cloudflare; loops=1; subreqs=1",
+            "cf-connecting-ip": "2401:4900:8822:4779:e83b:d4ff:b5a6:5d37",
+            "cf-ew-via": "15",
+            "cf-ipcountry": "IN",
+            "cf-ray": "9875714da38647e4-BOM",
+            "cf-visitor": "{\"scheme\":\"https\"}",
+            "cf-worker": "n8n.cloud",
+            "cookie": "rl_page_init_referrer=RudderEncrypt%3AU2FsdGVkX18YT7r2AfUjLH9rk8E4tJ%2BT2OlDWyc1AyM%3D; rl_page_init_referring_domain=RudderEncrypt%3AU2FsdGVkX1%2FmYmGzFmRU7Ar18j8yHhemkjrbVRK739Q%3D; _ga=GA1.1.1428404195.1759153320; _fbp=fb.1.1759153320982.642223806375259010; _gcl_au=1.1.1996778156.1759153467; _ga_0SC4FF2FH9=GS2.1.s1759158441$o2$g1$t1759158647$j43$l0$h0; rl_anonymous_id=RudderEncrypt%3AU2FsdGVkX18yAimtMDh6JaaNSfWswg9dA8x2lkswKg4Ic0DiAL0NzP%2B4BLxxr1bGwS%2BASzbTB4Ue6F01i4HISg%3D%3D; rl_user_id=RudderEncrypt%3AU2FsdGVkX1%2BY%2BcOPYHQtMQIAQ4sabfXJ7hqAsoIhqRrYEPI9QKr9Ad9Sxz5opk1OwLTfIh8PhTggU8QNl74Ps3p61pNCmb5K6%2F2Yyiw536IgozJrgnlQdUwEDTvFbqNH2mM8mziSACxwVEdCQvTCsRMXmQlPSwDPzgMF1cwxiDU%3D; rl_trait=RudderEncrypt%3AU2FsdGVkX19YHUqGWHTgXbMRysRhLWFj58JzF%2BgSFNrdb2cIRMHKbC5gH8wvAaZ3BfuDL0pvg109jokpb6L8P4P5Se7krghPPNKCQBKkSW%2FJzG%2BAXb4kiqK8ZTeoGzwGqIr7Wi%2BDtca6EQU0KNMYDpbEZj8XQYjB365WsNCTXrieSV6ZpSWWXusCA6toz2EREHxpvoixVphZewBS%2BkYM6g%3D%3D; n8n_anonymous_id=6dab4797-dd15-4009-a520-c6af1605789a; ph_phc_4URIAm1uYfJO7j8kWSe0J8lc8IqnstRLS7Jx8NcakHo_posthog=%7B%22distinct_id%22%3A%22ed283cb09d41cffe8b0e301ef7514132cf0cc37b22797bed1c9d5aef7e0f7a7c%238024110d-6a85-4eea-bebc-5ab1036a9f05%22%2C%22%24sesid%22%3A%5B1759173057295%2C%22019996e2-8595-7030-9727-30af71512ce1%22%2C1759173051797%5D%2C%22%24epp%22%3Atrue%2C%22%24initial_person_info%22%3A%7B%22r%22%3A%22%24direct%22%2C%22u%22%3A%22https%3A%2F%2Fsweety23.app.n8n.cloud%2Fworkflows%22%7D%7D; rl_session=RudderEncrypt%3AU2FsdGVkX1%2Bx%2FhWyuqiJxxAYMzw%2Bi68AOYNkVH5awOfk9kpddcJ8AYV7KcWyoHj2ZM8lvrVyKKVXeISnhmBUj6Psss6rwxqfGUvrvlQ81NmtcV%2FjsfCn8qH%2FjyYImrAIGbxlDz9Pm0%2FNIbnj1E7uzg%3D%3D",
+            "priority": "u=0, i",
+            "sec-ch-ua": "\"Chromium\";v=\"140\", \"Not=A?Brand\";v=\"24\", \"Google Chrome\";v=\"140\"",
+            "sec-ch-ua-mobile": "?0",
+            "sec-ch-ua-platform": "\"Windows\"",
+            "sec-fetch-dest": "document",
+            "sec-fetch-mode": "navigate",
+            "sec-fetch-site": "none",
+            "sec-fetch-user": "?1",
+            "upgrade-insecure-requests": "1",
+            "x-forwarded-for": "2401:4900:8822:4779:e83b:d4ff:b5a6:5d37, 172.69.87.217",
+            "x-forwarded-host": "sweety23.app.n8n.cloud",
+            "x-forwarded-port": "443",
+            "x-forwarded-proto": "https",
+            "x-forwarded-server": "traefik-prod-users-gwc-31-674f44b4c9-zzrz7",
+            "x-is-trusted": "yes",
+            "x-real-ip": "2401:4900:8822:4779:e83b:d4ff:b5a6:5d37"
+          },
+          "params": {},
+          "query": {
+            "question": "\"Explain supervised vs. unsupervised learning.\"",
+            "answer": "\"Supervised learning uses labeled data to train models, while unsupervised learning finds patterns in unlabeled data. Examples include regression for supervised and clustering for unsupervised.\""
+          },
+          "body": {},
+          "webhookUrl": "https://sweety23.app.n8n.cloud/webhook/answer_evaluation",
+          "executionMode": "production"
+        }
+      }
+    ],
+    "OpanAI": [
+      {
+        "json": {
+          "index": 0,
+          "message": {
+            "role": "assistant",
+            "content": {
+              "score": 7,
+              "feedback": "Clear and concise explanation with appropriate examples, but could include more details on methods and differences.",
+              "recommendation": "Maybe"
+            },
+            "refusal": null,
+            "annotations": []
+          },
+          "logprobs": null,
+          "finish_reason": "stop"
+        }
+      }
+    ],
+    "Format": [
+      {
+        "json": {
+          "score": " 7",
+          "feedback": "Clear and concise explanation with appropriate examples, but could include more details on methods and differences.",
+          "recommendation": "Maybe"
+        }
+      }
+    ],
+    "Respond to Webhook": [
+      {
+        "json": {
+          "score": " 7",
+          "feedback": "Clear and concise explanation with appropriate examples, but could include more details on methods and differences.",
+          "recommendation": "Maybe"
+        }
+      }
+    ]
+  },
+  "connections": {
+    "Webhook": {
+      "main": [
+        [
+          {
+            "node": "OpanAI",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Format": {
+      "main": [
+        [
+          {
+            "node": "Respond to Webhook",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpanAI": {
+      "main": [
+        [
+          {
+            "node": "Format",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": true,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "4c65cb47-166b-4667-85f7-fb548b7e45ac",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "ed283cb09d41cffe8b0e301ef7514132cf0cc37b22797bed1c9d5aef7e0f7a7c"
+  },
+  "id": "CP1R8pZeBLVMbqaM",
+  "tags": []
+}
