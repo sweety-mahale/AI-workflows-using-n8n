@@ -1,0 +1,302 @@
+{
+  "name": "Email Feedback Automation",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "send-feedback",
+        "responseMode": "responseNode",
+        "options": {}
+      },
+      "id": "5df889d1-348b-49c3-9246-ed1206532386",
+      "name": "Webhook - Candidate Decision",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 1.1,
+      "position": [
+        -528,
+        144
+      ],
+      "webhookId": "send-feedback"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 1
+          },
+          "conditions": [
+            {
+              "id": "accepted_condition",
+              "leftValue": "={{ $json.body.status }}",
+              "rightValue": "Accepted",
+              "operator": {
+                "type": "string",
+                "operation": "equals"
+              }
+            },
+            {
+              "id": "c35ede43-4987-4d0b-9027-efdb992c7243",
+              "leftValue": "={{ $json.body.status }}",
+              "rightValue": "accepted",
+              "operator": {
+                "type": "string",
+                "operation": "equals",
+                "name": "filter.operator.equals"
+              }
+            }
+          ],
+          "combinator": "or"
+        },
+        "options": {}
+      },
+      "id": "507f3580-8372-44a3-93b8-c33ac867524a",
+      "name": "Check Status",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2,
+      "position": [
+        -256,
+        144
+      ]
+    },
+    {
+      "parameters": {
+        "sendTo": "={{ $json.body.candidate_email }}",
+        "subject": "=Congratulations! Interview Update from {{ $json.body.company_name || 'Our Company' }}",
+        "message": "=<!DOCTYPE html>\n<html>\n<head>\n  <style>\n    body { font-family: Arial, sans-serif; line-height: 1.6; color: #333; }\n    .container { max-width: 600px; margin: 0 auto; padding: 20px; }\n    .header { background-color: #4CAF50; color: white; padding: 20px; text-align: center; border-radius: 5px 5px 0 0; }\n    .content { background-color: #f9f9f9; padding: 30px; border-radius: 0 0 5px 5px; }\n    .highlight { color: #4CAF50; font-weight: bold; }\n    .footer { margin-top: 20px; padding-top: 20px; border-top: 1px solid #ddd; font-size: 12px; color: #666; }\n  </style>\n</head>\n<body>\n  <div class=\"container\">\n    <div class=\"header\">\n      <h1>🎉 Congratulations!</h1>\n    </div>\n    <div class=\"content\">\n      <p>Dear <strong>{{ $json.body.candidate_name || 'Candidate' }}</strong>,</p>\n      \n      <p>We are <span class=\"highlight\">delighted to inform you</span> that you have been selected for the <strong>{{ $json.body.position || 'position' }}</strong> role at {{ $json.body.company_name || 'our company' }}!</p>\n      \n      <p>We were thoroughly impressed with your skills, experience, and the enthusiasm you demonstrated during the interview process. Your background aligns perfectly with what we're looking for, and we believe you'll be a great addition to our team.</p>\n      \n      <h3>Next Steps:</h3>\n      <ul>\n        <li>Our HR team will contact you within 2-3 business days with the offer letter</li>\n        <li>Please review the terms and let us know if you have any questions</li>\n        <li>We'll schedule an onboarding session once you accept the offer</li>\n      </ul>\n      \n      <p>If you have any immediate questions, please don't hesitate to reach out to us at <a href=\"mailto:{{ $json.body.hr_email || 'hr@company.com' }}\">{{ $json.body.hr_email || 'hr@company.com' }}</a>.</p>\n      \n      <p>We look forward to welcoming you to the team!</p>\n      \n      <p>Best regards,<br>\n      <strong>{{ $json.body.hiring_manager || 'Hiring Team' }}</strong><br>\n      {{ $json.body.company_name || 'Company Name' }}</p>\n      \n      <div class=\"footer\">\n        <p>This is an automated message. Please do not reply directly to this email.</p>\n      </div>\n    </div>\n  </div>\n</body>\n</html>",
+        "options": {}
+      },
+      "id": "ee20eeb2-85b0-44b2-8bd0-2833ee30827c",
+      "name": "Send Acceptance Email",
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.1,
+      "position": [
+        -16,
+        -16
+      ],
+      "webhookId": "a702e310-35dd-475d-ade3-505ae0256342",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "BeWv6KYu7vEahXpL",
+          "name": "Gmail account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "sendTo": "={{ $json.body.candidate_email }}",
+        "subject": "=Thank You for Your Interest - {{ $json.body.company_name || 'Company Name' }}",
+        "message": "=<!DOCTYPE html>\n<html>\n<head>\n  <style>\n    body { font-family: Arial, sans-serif; line-height: 1.6; color: #333; }\n    .container { max-width: 600px; margin: 0 auto; padding: 20px; }\n    .header { background-color: #2196F3; color: white; padding: 20px; text-align: center; border-radius: 5px 5px 0 0; }\n    .content { background-color: #f9f9f9; padding: 30px; border-radius: 0 0 5px 5px; }\n    .highlight { color: #2196F3; font-weight: bold; }\n    .footer { margin-top: 20px; padding-top: 20px; border-top: 1px solid #ddd; font-size: 12px; color: #666; }\n  </style>\n</head>\n<body>\n  <div class=\"container\">\n    <div class=\"header\">\n      <h1>Thank You</h1>\n    </div>\n    <div class=\"content\">\n      <p>Dear <strong>{{ $json.body.candidate_name || 'Candidate' }}</strong>,</p>\n      \n      <p>Thank you for taking the time to interview for the <strong>{{ $json.body.position || 'position' }}</strong> role at {{ $json.body.company_name || 'our company' }}. We truly appreciate your interest in joining our team and the effort you put into the interview process.</p>\n      \n      <p>After careful consideration, we have decided to move forward with other candidates whose qualifications more closely match our current needs for this particular role.</p>\n      \n      <p>This was a difficult decision, as we were impressed by your background and experience. We encourage you to:</p>\n      <ul>\n        <li>Keep an eye on our careers page for future opportunities</li>\n        <li>Apply for other positions that match your skills and interests</li>\n        <li>Connect with us on LinkedIn to stay updated</li>\n      </ul>\n      \n      <p>We wish you all the best in your job search and future career endeavors. Thank you again for your time and interest in {{ $json.body.company_name || 'our company' }}.</p>\n      \n      <p>Best regards,<br>\n      <strong>{{ $json.body.hiring_manager || 'Hiring Team' }}</strong><br>\n      {{ $json.body.company_name || 'Company Name' }}</p>\n      \n      <div class=\"footer\">\n        <p>This is an automated message. Please do not reply directly to this email.</p>\n      </div>\n    </div>\n  </div>\n</body>\n</html>",
+        "options": {}
+      },
+      "id": "b3a491cd-6e98-4c4c-947d-69f6e097d973",
+      "name": "Send Rejection Email",
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.1,
+      "position": [
+        0,
+        208
+      ],
+      "webhookId": "ab63dc61-88c9-48da-880d-85fdd03ce3cf",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "BeWv6KYu7vEahXpL",
+          "name": "Gmail account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "status_field",
+              "name": "email_sent",
+              "value": "true",
+              "type": "boolean"
+            },
+            {
+              "id": "candidate_field",
+              "name": "candidate_email",
+              "value": "={{ $('Webhook - Candidate Decision').item.json.body.candidate_email }}",
+              "type": "string"
+            },
+            {
+              "id": "decision_field",
+              "name": "decision",
+              "value": "={{ $('Webhook - Candidate Decision').item.json.body.status }}",
+              "type": "string"
+            },
+            {
+              "id": "timestamp_field",
+              "name": "sent_at",
+              "value": "={{ $now.toISO() }}",
+              "type": "string"
+            },
+            {
+              "id": "message_field",
+              "name": "confirmation_message",
+              "value": "={{ $('Webhook - Candidate Decision').item.json.body.status === 'accepted' ? 'Acceptance email sent successfully' : 'Rejection email sent successfully' }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "58bac119-787c-4e3c-95ff-1e91ee9d921e",
+      "name": "Create Confirmation Log",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.3,
+      "position": [
+        224,
+        112
+      ]
+    },
+    {
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "={{ $json }}",
+        "options": {
+          "responseHeaders": {
+            "entries": [
+              {
+                "name": "Content-Type",
+                "value": "application/json"
+              }
+            ]
+          }
+        }
+      },
+      "id": "5ff55ad2-1b7b-4738-98b8-2a43dd59a91a",
+      "name": "Return Confirmation",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.1,
+      "position": [
+        480,
+        96
+      ]
+    },
+    {
+      "parameters": {
+        "content": "## Webhook\n\nThis node accepts input status(Accepted/Rejected),Candidate mail , Company_name , Hr Manager name",
+        "height": 336
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        -592,
+        -32
+      ],
+      "typeVersion": 1,
+      "id": "ad02db63-d7b2-426c-a31d-1070ca0234b8",
+      "name": "Sticky Note"
+    },
+    {
+      "parameters": {
+        "content": "## Decision Node\n\nChecks if status is Accepted or not\n\nIf Accepted sent Acceptance Mail else send Rejection mail\n",
+        "height": 336,
+        "color": 3
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        -320,
+        -32
+      ],
+      "typeVersion": 1,
+      "id": "61049a28-8ae5-4614-99c6-f8b0301c4167",
+      "name": "Sticky Note1"
+    },
+    {
+      "parameters": {
+        "content": "## Confermation node \n\nReturn confirmations if mail sends or not",
+        "height": 368,
+        "color": 4
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        144,
+        -32
+      ],
+      "typeVersion": 1,
+      "id": "45520ed7-a0c7-4d0c-9658-1064658f7652",
+      "name": "Sticky Note2"
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Webhook - Candidate Decision": {
+      "main": [
+        [
+          {
+            "node": "Check Status",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Check Status": {
+      "main": [
+        [
+          {
+            "node": "Send Acceptance Email",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Send Rejection Email",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Send Acceptance Email": {
+      "main": [
+        [
+          {
+            "node": "Create Confirmation Log",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Send Rejection Email": {
+      "main": [
+        [
+          {
+            "node": "Create Confirmation Log",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Create Confirmation Log": {
+      "main": [
+        [
+          {
+            "node": "Return Confirmation",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "c134beeb-1cf0-4282-b7bb-18b599b82485",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "558d88703fb65b2d0e44613bc35916258b0f0bf983c5d4730c00c424b77ca36a"
+  },
+  "id": "a0DnNL93e667lJCp",
+  "tags": []
+}

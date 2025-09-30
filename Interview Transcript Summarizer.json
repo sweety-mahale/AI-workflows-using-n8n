@@ -1,0 +1,228 @@
+{
+  "name": "Interview Transcript Summarizer",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "interview-summary",
+        "responseMode": "responseNode",
+        "options": {}
+      },
+      "id": "0950647b-fdb9-4515-aebf-0a694e4169c2",
+      "name": "Webhook",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 1.1,
+      "position": [
+        -464,
+        -48
+      ],
+      "webhookId": "interview-summary"
+    },
+    {
+      "parameters": {
+        "modelId": {
+          "__rl": true,
+          "value": "gpt-4.1-mini",
+          "mode": "list",
+          "cachedResultName": "GPT-4.1-MINI"
+        },
+        "messages": {
+          "values": [
+            {
+              "content": "You are an expert interview analyst. Analyze the provided interview transcript and provide a structured summary with three sections:\n\n1. Strengths: Identify and list the candidate's key strengths, skills, and positive attributes demonstrated during the interview.\n\n2. Weaknesses: Identify and list areas of concern, gaps in experience, or weaknesses observed during the interview.\n\n3. Final Recommendation: Provide a clear hiring recommendation (e.g., Candidate accepted and rejected) with a brief justification.\n\nProvide your response in valid JSON format with this exact structure:\n{\n  \"strengths\": [\"strength 1\", \"strength 2\", ...],\n  \"weaknesses\": [\"weakness 1\", \"weakness 2\", ...],\n  \"recommendation\": {\n    \"decision\": \"Accepted/Rejected\",\n    \"justification\": \"Brief explanation\"\n  }\n}",
+              "role": "system"
+            },
+            {
+              "content": "=Please analyze this interview transcript:\n\n{{ $json.body.transcript }}"
+            }
+          ]
+        },
+        "options": {
+          "maxTokens": 1500,
+          "temperature": 0.3
+        }
+      },
+      "id": "62e4ffaf-a207-43b4-9267-9184949d526a",
+      "name": "OpenAI",
+      "type": "@n8n/n8n-nodes-langchain.openAi",
+      "typeVersion": 1.4,
+      "position": [
+        -224,
+        -48
+      ],
+      "credentials": {
+        "openAiApi": {
+          "id": "erYlCg9Q095nZ8xv",
+          "name": "OpenAi account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "e75f1e35-a922-4a63-bfd5-a9d8076eb832",
+              "name": "Strengths",
+              "value": "={{ JSON.parse($json.message.content).strengths }}",
+              "type": "array"
+            },
+            {
+              "id": "b578d30b-3c72-4ceb-a635-8758ad5af888",
+              "name": "Weekness",
+              "value": "={{ JSON.parse($json.message.content).weaknesses  }}",
+              "type": "array"
+            },
+            {
+              "id": "ca3cae6f-02f9-453c-bef0-a8dc07a52b72",
+              "name": "Final Recomendation",
+              "value": "={{ JSON.parse($json.message.content).recommendation }}",
+              "type": "object"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "1b6e33f4-d03c-4dca-9792-12785c0b0464",
+      "name": "Set",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.3,
+      "position": [
+        96,
+        -48
+      ]
+    },
+    {
+      "parameters": {
+        "content": "## Webhook Node\n\nThis node take a full transcript of interviewer or candidate \nvia POST method",
+        "height": 336,
+        "width": 256
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        -544,
+        -224
+      ],
+      "typeVersion": 1,
+      "id": "e6d46992-66c0-4310-8d41-b3f192976918",
+      "name": "Sticky Note"
+    },
+    {
+      "parameters": {
+        "content": "## OpenAI node\n\nFrom json input from webhook, AI Summarize this whole transcript and return Stenghts , Weekness and Final Recomandation",
+        "height": 336,
+        "width": 272,
+        "color": 5
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        -256,
+        -224
+      ],
+      "typeVersion": 1,
+      "id": "0915aea3-dfae-4ba8-b1ea-703ff7cbfa7f",
+      "name": "Sticky Note1"
+    },
+    {
+      "parameters": {
+        "content": "## Parse Node\n\nFrom Chatgpt generated response it classifies strengths , weekness and Final Recommendation into different json",
+        "height": 336,
+        "color": 4
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        32,
+        -224
+      ],
+      "typeVersion": 1,
+      "id": "3bbcae2a-5f09-4157-9444-ff415330f6d4",
+      "name": "Sticky Note2"
+    },
+    {
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "={{ $json }}",
+        "options": {
+          "responseHeaders": {
+            "entries": [
+              {
+                "name": "Content-Type",
+                "value": "application/json"
+              }
+            ]
+          }
+        }
+      },
+      "id": "055e2770-8a9c-4495-b354-1b26d9f024c1",
+      "name": "Respond to Webhook",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.1,
+      "position": [
+        352,
+        -48
+      ]
+    },
+    {
+      "parameters": {
+        "content": "## Output  \n\nGives Json output ",
+        "height": 336,
+        "color": 3
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        288,
+        -224
+      ],
+      "typeVersion": 1,
+      "id": "04ed518f-c1b5-4523-88f0-10816e83fa5c",
+      "name": "Sticky Note3"
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Webhook": {
+      "main": [
+        [
+          {
+            "node": "OpenAI",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpenAI": {
+      "main": [
+        [
+          {
+            "node": "Set",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Set": {
+      "main": [
+        [
+          {
+            "node": "Respond to Webhook",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "0071128e-bf82-4ee5-85a9-0e2f9fba0e0b",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "558d88703fb65b2d0e44613bc35916258b0f0bf983c5d4730c00c424b77ca36a"
+  },
+  "id": "w8ImCupmRuwrtsAr",
+  "tags": []
+}
